@@ -47,10 +47,11 @@ define([
         templateString: widgetTemplate,
 
         // DOM elements
-        inputNodes: null,
-        colorSelectNode: null,
-        colorInputNode: null,
-        infoTextNode: null,
+        // inputNodes: null,
+        // colorSelectNode: null,
+        // colorInputNode: null,
+        // infoTextNode: null,
+        target:null,
 
         // Parameters configured in the Modeler.
         mfToExecute: "",
@@ -67,6 +68,8 @@ define([
         constructor: function () {
             logger.debug(this.id + ".constructor");
             this._handles = [];
+
+
         },
 
         // dijit._WidgetBase.postCreate is called after constructing the widget. Implement to do extra setup work.
@@ -79,6 +82,36 @@ define([
 
             this._updateRendering();
             this._setupEvents();
+
+            ////// CONNER //////
+            console.log(this.target.parentElement.parentElement);
+            var element = this.target.parentElement.parentElement.previousSibling
+            // clone the node to remove the event listeners
+            //TODO: fix the plus icon
+            var clone = element.cloneNode();
+            while (element.firstChild) {
+              clone.appendChild(element.lastChild);
+            }
+            element.parentNode.replaceChild(clone, element);
+            var $gbBody = $(this.target.parentElement.parentElement)
+            ,   $gbHeader = $gbBody.prev()
+            ,   $gbIcon = $gbHeader.find('i')
+            ,   clsOpen = 'glyphicon-minus glyphicon mx-groupbox-collapse-icon'
+            ,   clsClosed = 'glyphicon-plus glyphicon mx-groupbox-collapse-icon'
+
+            // setup
+            $gbHeader.on('click', function(){
+              if ($gbBody.css('display') == 'none'){
+                $gbBody.slideDown(function(){
+                    $gbIcon.attr('class', clsOpen)
+                });
+              }
+              else {
+                $gbBody.slideUp(function(){
+                    $gbIcon.attr('class', clsClosed)
+                });
+              }
+            })
         },
 
         // mxui.widget._WidgetBase.update is called when context is changed or initialized. Implement to re-render and / or fetch data.
@@ -122,56 +155,56 @@ define([
         // Attach events to HTML dom elements
         _setupEvents: function () {
             logger.debug(this.id + "._setupEvents");
-            this.connect(this.colorSelectNode, "change", function (e) {
-                // Function from mendix object to set an attribute.
-                this._contextObj.set(this.backgroundColor, this.colorSelectNode.value);
-            });
+            // this.connect(this.colorSelectNode, "change", function (e) {
+            //     // Function from mendix object to set an attribute.
+            //     this._contextObj.set(this.backgroundColor, this.colorSelectNode.value);
+            // });
 
-            this.connect(this.infoTextNode, "click", function (e) {
-                // Only on mobile stop event bubbling!
-                this._stopBubblingEventOnMobile(e);
-
-                // If a microflow has been set execute the microflow on a click.
-                if (this.mfToExecute !== "") {
-                    mx.data.action({
-                        params: {
-                            applyto: "selection",
-                            actionname: this.mfToExecute,
-                            guids: [ this._contextObj.getGuid() ]
-                        },
-                        store: {
-                            caller: this.mxform
-                        },
-                        callback: function (obj) {
-                            //TODO what to do when all is ok!
-                        },
-                        error: dojoLang.hitch(this, function (error) {
-                            logger.error(this.id + ": An error occurred while executing microflow: " + error.description);
-                        })
-                    }, this);
-                }
-            });
+            // this.connect(this.infoTextNode, "click", function (e) {
+            //     // Only on mobile stop event bubbling!
+            //     this._stopBubblingEventOnMobile(e);
+            //
+            //     // If a microflow has been set execute the microflow on a click.
+            //     if (this.mfToExecute !== "") {
+            //         mx.data.action({
+            //             params: {
+            //                 applyto: "selection",
+            //                 actionname: this.mfToExecute,
+            //                 guids: [ this._contextObj.getGuid() ]
+            //             },
+            //             store: {
+            //                 caller: this.mxform
+            //             },
+            //             callback: function (obj) {
+            //                 //TODO what to do when all is ok!
+            //             },
+            //             error: dojoLang.hitch(this, function (error) {
+            //                 logger.error(this.id + ": An error occurred while executing microflow: " + error.description);
+            //             })
+            //         }, this);
+            //     }
+            // });
         },
 
         // Rerender the interface.
         _updateRendering: function (callback) {
             logger.debug(this.id + "._updateRendering");
-            this.colorSelectNode.disabled = this._readOnly;
-            this.colorInputNode.disabled = this._readOnly;
+            // this.colorSelectNode.disabled = this._readOnly;
+            // this.colorInputNode.disabled = this._readOnly;
 
-            if (this._contextObj !== null) {
-                dojoStyle.set(this.domNode, "display", "block");
-
-                var colorValue = this._contextObj.get(this.backgroundColor);
-
-                this.colorInputNode.value = colorValue;
-                this.colorSelectNode.value = colorValue;
-
-                dojoHtml.set(this.infoTextNode, this.messageString);
-                dojoStyle.set(this.infoTextNode, "background-color", colorValue);
-            } else {
-                dojoStyle.set(this.domNode, "display", "none");
-            }
+            // if (this._contextObj !== null) {
+            //     dojoStyle.set(this.domNode, "display", "block");
+            //
+            //     var colorValue = this._contextObj.get(this.backgroundColor);
+            //
+            //     this.colorInputNode.value = colorValue;
+            //     this.colorSelectNode.value = colorValue;
+            //
+            //     dojoHtml.set(this.infoTextNode, this.messageString);
+            //     dojoStyle.set(this.infoTextNode, "background-color", colorValue);
+            // } else {
+            //     dojoStyle.set(this.domNode, "display", "none");
+            // }
 
             // Important to clear all validations!
             this._clearValidations();
@@ -185,15 +218,15 @@ define([
             logger.debug(this.id + "._handleValidation");
             this._clearValidations();
 
-            var validation = validations[0],
-                message = validation.getReasonByAttribute(this.backgroundColor);
-
-            if (this._readOnly) {
-                validation.removeAttribute(this.backgroundColor);
-            } else if (message) {
-                this._addValidation(message);
-                validation.removeAttribute(this.backgroundColor);
-            }
+            // var validation = validations[0],
+            //     message = validation.getReasonByAttribute(this.backgroundColor);
+            //
+            // if (this._readOnly) {
+            //     validation.removeAttribute(this.backgroundColor);
+            // } else if (message) {
+            //     this._addValidation(message);
+            //     validation.removeAttribute(this.backgroundColor);
+            // }
         },
 
         // Clear validations.

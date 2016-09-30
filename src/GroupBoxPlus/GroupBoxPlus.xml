@@ -6,17 +6,22 @@
     <icon />
 
     <properties>
-      
-        <property key="messageString" type="string" required="false" defaultValue="">
-            <caption>Message</caption>
+        <property key="roleMaps" type="object" required="false" isList="true">
+            <caption>Appearance per Role</caption>
             <category>Appearance</category>
             <description>The message visible within the widget.</description>
-        </property>
-        <property key="mfToExecute" type="microflow" required="false" defaultValue="">
-            <caption>Microflow</caption>
-            <category>Behavior</category>
-            <description>The microflow to execute on click.</description>
-            <returnType type="Boolean" />
+            <properties>
+              <property key="role" type="string">
+                <caption>Role</caption>
+                <category>Appearance</category>
+                <description>The user role.</description>
+              </property>
+              <property key="view" type="boolean" defaultValue="true">
+                <caption>Start Open?</caption>
+                <category>Appearance</category>
+                <description>If yes, the group box starts expanded, else it starts collapsed.</description>
+              </property>
+            </properties>
         </property>
     </properties>
 </widget>

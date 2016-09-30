@@ -6,7 +6,6 @@
     <icon />
 
     <properties>
-
         <property key="roleMaps" type="object" required="false" isList="true">
             <caption>Appearance per Role</caption>
             <category>Appearance</category>
@@ -23,12 +22,6 @@
                 <description>If yes, the group box starts expanded, else it starts collapsed.</description>
               </property>
             </properties>
-        </property>
-        <property key="mfToExecute" type="microflow" required="false" defaultValue="">
-            <caption>Microflow</caption>
-            <category>Behavior</category>
-            <description>The microflow to execute on click.</description>
-            <returnType type="Boolean" />
         </property>
     </properties>
 </widget>

@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://www.mendix.com/package/1.0/">
-    <clientModule name="GroupBoxPlus" version="1.0.0" xmlns="http://www.mendix.com/clientModule/1.0/">
+    <clientModule name="GroupBoxPlus" version="3.0.1" xmlns="http://www.mendix.com/clientModule/1.0/">
         <widgetFiles>
-            <widgetFile path="GroupBoxPlus/GroupBoxPlus.xml" />
+            <widgetFile path="GroupBoxPlus/GroupBoxPlus.xml"/>
         </widgetFiles>
         <files>
-            <file path="GroupBoxPlus/widget/" />
+            <file path="GroupBoxPlus/widget/"/>
         </files>
     </clientModule>
 </package>

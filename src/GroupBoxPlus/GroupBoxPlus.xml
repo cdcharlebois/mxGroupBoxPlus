@@ -6,6 +6,11 @@
     <icon />
 
     <properties>
+        <property key="isNonCollapsible" type="boolean" defaultValue="false">
+            <caption>Non-collapsible group box?</caption>
+            <category>Appearance</category>
+            <description>If the parent group box is non collapsible, this flag should be marked Yes. Roles defined will have no effect.</description>
+        </property>
         <property key="roleMaps" type="object" required="false" isList="true">
             <caption>Appearance per Role</caption>
             <category>Appearance</category>
@@ -22,6 +27,11 @@
                 <description>If yes, the group box starts expanded, else it starts collapsed.</description>
               </property>
             </properties>
+        </property>
+        <property key="gbColor" type="string" required="false">
+            <caption>Color</caption>
+            <category>Appearance</category>
+            <description>Enter the desired color for the group box (css color or hex code).</description>
         </property>
     </properties>
 </widget>

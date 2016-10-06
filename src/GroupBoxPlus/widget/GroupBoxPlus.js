@@ -52,53 +52,70 @@ define([
 
         // Parameters configured in the Modeler.
         roleMaps: {},
+        isNonCollapsible: null,
+        gbColor: null,
 
         // Internal variables. Non-primitives created in the prototype are shared between all widget instances.
         _handles: null,
         _contextObj: null,
         _alertDiv: null,
         _readOnly: false,
+        _numberOfRoles: 0,
+        _myRoles: null,
+        _useDefaultBehavior: true,
 
         // dojo.declare.constructor is called to construct the widget instance. Implement to initialize non-primitive properties.
         constructor: function () {
             logger.debug(this.id + ".constructor");
             this._handles = [];
-
         },
 
         // dijit._WidgetBase.postCreate is called after constructing the widget. Implement to do extra setup work.
         postCreate: function () {
-            if (this.roleMaps.length > 0){
-                this._setInitialState();
+            // user role is mx.session.getUserRoles()[0].jsonData.attributes.Name.value
+            if (mx && mx.session && mx.session.getUserRoles && typeof mx.session.getUserRoles == "function") {
+                this._myRoles = mx.session.getUserRoles()
+                this.numberOfRoles = this._myRoles.length || 0
             }
-            this._setupListeners();
+       
+            var self = this
+            this._myRoles.forEach(function(mr) {
+                self.roleMaps.forEach(function(rm) {
+                    if(     self.isNonCollapsible             == false 
+                       &&   mr.jsonData.attributes.Name.value == rm.role) self._useDefaultBehavior = false
+                })
+            })
+            
+            if (this.isNonCollapsible != true) {
+                if (    this._useDefaultBehavior == false
+                    &&  this.roleMaps.length     >  0) {
+                    this._setInitialState();
+                }
+                this._setupListeners();                
+            }
+                        
+            if (this.gbColor != null) {
+                this._setGbColor();
+            }
         },
 
         _setInitialState: function(){
-          // user role is mx.session.getUserRoles()[0].jsonData.attributes.Name.value
-          var numberOfRoles = 0
-          ,   roleName = ""
-          ,   myRoles;
-          if (mx && mx.session && mx.session.getUserRoles && typeof mx.session.getUserRoles == "function"){
-            myRoles = mx.session.getUserRoles()
-            numberOfRoles = myRoles.length || 0
-          }
-          if (numberOfRoles >= 1){
             // user has some roles
-            var myRoles = myRoles.map(function(r){
+            this._myRoles = this._myRoles.map(function(r){
               return (r && r.jsonData && r.jsonData.attributes && r.jsonData.attributes.Name && r.jsonData.attributes.Name.value ? r.jsonData.attributes.Name.value : "")
             })
+            
             //names has the array of all the names of the user's role
             var startOpen = false
             ,   rolesToOpen = this.roleMaps.filter(function(r){return r.view})
+            
+            var self = this
             // is the user in a role where it should be opened?
             rolesToOpen.forEach(function(rto){
-              myRoles.forEach(function(mr){
-                // console.log(rto.role + " == " + mr)
+              self._myRoles.forEach(function(mr){
                 if (rto.role == mr) startOpen = true
               })
             })
-            // console.log(startOpen)
 
             // gather nodes
             var $gbBody = $(this.target.parentElement.parentElement)
@@ -106,7 +123,7 @@ define([
             ,   $gbIcon = $gbHeader.find('i')
             ,   clsOpen = 'glyphicon-minus glyphicon mx-groupbox-collapse-icon'
             ,   clsClosed = 'glyphicon-plus glyphicon mx-groupbox-collapse-icon'
-
+            
             if (startOpen){
               // open it
               $gbBody.css('display', 'block')
@@ -115,16 +132,13 @@ define([
               // close it
               $gbBody.css('display', 'none')
               $gbIcon.attr('class', clsClosed)
-
             }
-
-          }
         },
 
         _setupListeners: function(){
           var element = this.target.parentElement.parentElement.previousSibling
 
-          // clone the node to remove the event listeners
+          //clone the node to remove the event listeners
           var clone = element.cloneNode();
           while (element.firstChild) {
             clone.appendChild(element.lastChild);
@@ -151,6 +165,17 @@ define([
               });
             }
           })
+        },
+        
+        // MC: Update header and border color
+        _setGbColor: function() {
+            // gather nodes
+            var $gbBody = $(this.target.parentElement.parentElement)
+            ,   $gbHeader = $gbBody.prev()
+            
+            $gbHeader.css('background-color', this.gbColor)
+            $gbHeader.css('border-color', this.gbColor)
+            $gbBody.css('border-color', this.gbColor)
         },
     });
 });

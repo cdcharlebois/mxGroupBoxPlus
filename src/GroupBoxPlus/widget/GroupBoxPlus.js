@@ -77,23 +77,23 @@ define([
                 this._myRoles = mx.session.getUserRoles()
                 this.numberOfRoles = this._myRoles.length || 0
             }
-       
+
             var self = this
             this._myRoles.forEach(function(mr) {
                 self.roleMaps.forEach(function(rm) {
-                    if(     self.isNonCollapsible             == false 
+                    if(     self.isNonCollapsible             == false
                        &&   mr.jsonData.attributes.Name.value == rm.role) self._useDefaultBehavior = false
                 })
             })
-            
+
             if (this.isNonCollapsible != true) {
                 if (    this._useDefaultBehavior == false
                     &&  this.roleMaps.length     >  0) {
                     this._setInitialState();
                 }
-                this._setupListeners();                
+                this._setupListeners();
             }
-                        
+
             if (this.gbColor != null) {
                 this._setGbColor();
             }
@@ -104,11 +104,11 @@ define([
             this._myRoles = this._myRoles.map(function(r){
               return (r && r.jsonData && r.jsonData.attributes && r.jsonData.attributes.Name && r.jsonData.attributes.Name.value ? r.jsonData.attributes.Name.value : "")
             })
-            
+
             //names has the array of all the names of the user's role
             var startOpen = false
             ,   rolesToOpen = this.roleMaps.filter(function(r){return r.view})
-            
+
             var self = this
             // is the user in a role where it should be opened?
             rolesToOpen.forEach(function(rto){
@@ -123,7 +123,7 @@ define([
             ,   $gbIcon = $gbHeader.find('i')
             ,   clsOpen = 'glyphicon-minus glyphicon mx-groupbox-collapse-icon'
             ,   clsClosed = 'glyphicon-plus glyphicon mx-groupbox-collapse-icon'
-            
+
             if (startOpen){
               // open it
               $gbBody.css('display', 'block')
@@ -166,13 +166,13 @@ define([
             }
           })
         },
-        
+
         // MC: Update header and border color
         _setGbColor: function() {
             // gather nodes
             var $gbBody = $(this.target.parentElement.parentElement)
             ,   $gbHeader = $gbBody.prev()
-            
+
             $gbHeader.css('background-color', this.gbColor)
             $gbHeader.css('border-color', this.gbColor)
             $gbBody.css('border-color', this.gbColor)

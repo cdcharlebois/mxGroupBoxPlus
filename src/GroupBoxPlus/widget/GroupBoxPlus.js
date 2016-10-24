@@ -47,13 +47,13 @@ define([
         templateString: widgetTemplate,
 
         // DOM elements
-
         target:null,
 
         // Parameters configured in the Modeler.
         roleMaps: {},
         isNonCollapsible: null,
         gbColor: null,
+        mfStartOpen: null,
 
         // Internal variables. Non-primitives created in the prototype are shared between all widget instances.
         _handles: null,
@@ -81,14 +81,13 @@ define([
             var self = this
             this._myRoles.forEach(function(mr) {
                 self.roleMaps.forEach(function(rm) {
-                    if(     self.isNonCollapsible             == false
-                       &&   mr.jsonData.attributes.Name.value == rm.role) self._useDefaultBehavior = false
+                    if ( self.isNonCollapsible == false && mr.jsonData.attributes.Name.value == rm.role )
+                      self._useDefaultBehavior = false
                 })
             })
 
             if (this.isNonCollapsible != true) {
-                if (    this._useDefaultBehavior == false
-                    &&  this.roleMaps.length     >  0) {
+                if (this._useDefaultBehavior == false && this.roleMaps.length > 0) {
                     this._setInitialState();
                 }
                 this._setupListeners();
@@ -100,22 +99,24 @@ define([
         },
 
         _setInitialState: function(){
-            // user has some roles
-            this._myRoles = this._myRoles.map(function(r){
-              return (r && r.jsonData && r.jsonData.attributes && r.jsonData.attributes.Name && r.jsonData.attributes.Name.value ? r.jsonData.attributes.Name.value : "")
-            })
-
-            //names has the array of all the names of the user's role
-            var startOpen = false
-            ,   rolesToOpen = this.roleMaps.filter(function(r){return r.view})
-
-            var self = this
-            // is the user in a role where it should be opened?
-            rolesToOpen.forEach(function(rto){
-              self._myRoles.forEach(function(mr){
-                if (rto.role == mr) startOpen = true
+            var startOpen = false;
+            if (false /*this.mfStartOpen*/) {
+              // use the microflow to determine if it should start open
+            }
+            else if (true /* use the roles */) {
+              // use the user roles to determine if it should start open
+              var thisUserRoles = this._getCurrentUserRoles()
+              ,   rolesToOpen = this.roleMaps
+                                  .filter(function(r){return r.view}) // only the ones where we should open it
+                                  .map(function(rr){return rr.role})  // just the names of those roles
+              ,   self = this
+              // is the user in a role where it should be opened?
+              rolesToOpen.forEach(function(roleToOpen){
+                thisUserRoles.forEach(function(myRole){
+                  if (roleToOpen == myRole) startOpen = true
+                })
               })
-            })
+            }
 
             // gather nodes
             var $gbBody = $(this.target.parentElement.parentElement)
@@ -167,6 +168,11 @@ define([
           })
         },
 
+        _getCurrentUserRoles: function(){
+          return this._myRoles.map(function(r){
+            return (r && r.jsonData && r.jsonData.attributes && r.jsonData.attributes.Name && r.jsonData.attributes.Name.value ? r.jsonData.attributes.Name.value : "")
+          })
+        },
         // MC: Update header and border color
         _setGbColor: function() {
             // gather nodes

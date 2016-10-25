@@ -21,168 +21,175 @@ define([
     "mxui/widget/_WidgetBase",
     "dijit/_TemplatedMixin",
 
-    "mxui/dom",
-    "dojo/dom",
-    "dojo/dom-prop",
-    "dojo/dom-geometry",
-    "dojo/dom-class",
-    "dojo/dom-style",
-    "dojo/dom-construct",
-    "dojo/_base/array",
-    "dojo/_base/lang",
+    // "mxui/dom",
+    // "dojo/dom",
+    // "dojo/dom-prop",
+    // "dojo/dom-geometry",
+    // "dojo/dom-class",
+    // "dojo/dom-style",
+    // "dojo/dom-construct",
+    // "dojo/_base/array",
+    // "dojo/_base/lang",
     "dojo/text",
-    "dojo/html",
-    "dojo/_base/event",
+    // "dojo/html",
+    // "dojo/_base/event",
 
     "GroupBoxPlus/lib/jquery-1.11.2",
     "dojo/text!GroupBoxPlus/widget/template/GroupBoxPlus.html"
-], function (declare, _WidgetBase, _TemplatedMixin, dom, dojoDom, dojoProp, dojoGeometry, dojoClass, dojoStyle, dojoConstruct, dojoArray, dojoLang, dojoText, dojoHtml, dojoEvent, _jQuery, widgetTemplate) {
+], function(declare,
+    _WidgetBase,
+    _TemplatedMixin,
+    // dom,
+    // dojoDom,
+    // dojoProp,
+    // dojoGeometry,
+    // dojoClass,
+    // dojoStyle,
+    // dojoConstruct,
+    // dojoArray,
+    // dojoLang,
+    dojoText,
+    // dojoHtml,
+    // dojoEvent,
+    _jQuery,
+    widgetTemplate) {
     "use strict";
 
     var $ = _jQuery.noConflict(true);
 
     // Declare widget's prototype.
-    return declare("GroupBoxPlus.widget.GroupBoxPlus", [ _WidgetBase, _TemplatedMixin ], {
+    return declare("GroupBoxPlus.widget.GroupBoxPlus", [_WidgetBase, _TemplatedMixin], {
         // _TemplatedMixin will create our dom node using this HTML template.
         templateString: widgetTemplate,
 
         // DOM elements
-        target:null,
+        target: null,
 
         // Parameters configured in the Modeler.
         roleMaps: {},
         isNonCollapsible: null,
-        gbColor: null,
         mfStartOpen: null,
 
-        // Internal variables. Non-primitives created in the prototype are shared between all widget instances.
-        _handles: null,
-        _contextObj: null,
-        _alertDiv: null,
-        _readOnly: false,
-        _numberOfRoles: 0,
-        _myRoles: null,
-        _useDefaultBehavior: true,
+        // globals
+        CLASS_OPEN: 'glyphicon-minus glyphicon mx-groupbox-collapse-icon',
+        CLASS_CLOSED: 'glyphicon-plus glyphicon mx-groupbox-collapse-icon',
 
-        // dojo.declare.constructor is called to construct the widget instance. Implement to initialize non-primitive properties.
-        constructor: function () {
-            logger.debug(this.id + ".constructor");
-            this._handles = [];
-        },
 
         // dijit._WidgetBase.postCreate is called after constructing the widget. Implement to do extra setup work.
-        postCreate: function () {
-            // user role is mx.session.getUserRoles()[0].jsonData.attributes.Name.value
-            if (mx && mx.session && mx.session.getUserRoles && typeof mx.session.getUserRoles == "function") {
-                this._myRoles = mx.session.getUserRoles()
-                this.numberOfRoles = this._myRoles.length || 0
+        postCreate: function() {
+            // determine what method to use to set the initial state of the GB
+            if (this.mfStartOpen != '') {
+                // use microflow
+                this._setInitialStateFromMF(this.mfStartOpen)
+            } else if (this.roleMaps.length > 0) {
+                // use roles
+                this._setInitialStateFromRoles()
             }
+            // only add listeners if groupbox is collapsible
+            var nodes = this._getViewNodes()
+            if (nodes.header.parent().hasClass('mx-groupbox-collapsible'))
+              this._setupListeners();
+        },
 
-            var self = this
-            this._myRoles.forEach(function(mr) {
-                self.roleMaps.forEach(function(rm) {
-                    if ( self.isNonCollapsible == false && mr.jsonData.attributes.Name.value == rm.role )
-                      self._useDefaultBehavior = false
+        _setInitialStateFromRoles: function() {
+            // use the user roles to determine if it should start open
+            var thisUserRoles = this._getCurrentUserRoles(),
+                mappedRoles = this.roleMaps,
+                self = this,
+                roleIsMapped = false,
+                shouldBeOpen = false
+                // does the widget specify a behavior for this user's role?
+                // is the user in a role where it should be opened?
+            mappedRoles.forEach(function(mappedRole) {
+                thisUserRoles.forEach(function(myRole) {
+                    if (mappedRole.role == myRole) roleIsMapped = true
+                    if (mappedRole.role == myRole && mappedRole.view) shouldBeOpen = true
                 })
             })
+            if (roleIsMapped) {
+                this._setViewState(shouldBeOpen)
+            }
 
-            if (this.isNonCollapsible != true) {
-                if (this._useDefaultBehavior == false && this.roleMaps.length > 0) {
-                    this._setInitialState();
+        },
+        _setInitialStateFromMF: function(mfName) {
+            // console.log('Executing: ' + mfName)
+                // debugger;
+            var self = this
+            mx.data.action({
+                params: {
+                    actionname: mfName
+                },
+                callback: function(res) {
+                  self._setViewState(res)
+                },
+                error: function(err) {
+                    ret = err
                 }
-                this._setupListeners();
-            }
+            }, this)
 
-            if (this.gbColor != null) {
-                this._setGbColor();
-            }
         },
+        _setupListeners: function() {
+            var element = this.target.parentElement.parentElement.previousSibling
 
-        _setInitialState: function(){
-            var startOpen = false;
-            if (false /*this.mfStartOpen*/) {
-              // use the microflow to determine if it should start open
+            //clone the node to remove the event listeners
+            var clone = element.cloneNode();
+            while (element.firstChild) {
+                clone.appendChild(element.lastChild);
             }
-            else if (true /* use the roles */) {
-              // use the user roles to determine if it should start open
-              var thisUserRoles = this._getCurrentUserRoles()
-              ,   rolesToOpen = this.roleMaps
-                                  .filter(function(r){return r.view}) // only the ones where we should open it
-                                  .map(function(rr){return rr.role})  // just the names of those roles
-              ,   self = this
-              // is the user in a role where it should be opened?
-              rolesToOpen.forEach(function(roleToOpen){
-                thisUserRoles.forEach(function(myRole){
-                  if (roleToOpen == myRole) startOpen = true
-                })
-              })
-            }
+            element.parentNode.replaceChild(clone, element);
 
             // gather nodes
-            var $gbBody = $(this.target.parentElement.parentElement)
-            ,   $gbHeader = $gbBody.prev()
-            ,   $gbIcon = $gbHeader.find('i')
-            ,   clsOpen = 'glyphicon-minus glyphicon mx-groupbox-collapse-icon'
-            ,   clsClosed = 'glyphicon-plus glyphicon mx-groupbox-collapse-icon'
+            var self  = this
+            ,   nodes = this._getViewNodes()
 
-            if (startOpen){
+
+            // setup
+            nodes.header.on('click', function() {
+                if (nodes.body.css('display') == 'none') {
+                    nodes.body.slideDown(function() {
+                        nodes.icon.attr('class', self.CLASS_OPEN)
+                    });
+                } else {
+                    nodes.body.slideUp(function() {
+                        nodes.icon.attr('class', self.CLASS_CLOSED)
+                    });
+                }
+            })
+        },
+        _getCurrentUserRoles: function() {
+            var userRoles, numberOfRoles
+            if (mx && mx.session && mx.session.getUserRoles && typeof mx.session.getUserRoles == "function") {
+                userRoles = mx.session.getUserRoles()
+            }
+            return userRoles.map(function(r) {
+                return (r && r.jsonData && r.jsonData.attributes && r.jsonData.attributes.Name && r.jsonData.attributes.Name.value ? r.jsonData.attributes.Name.value : "")
+            })
+        },
+        _setViewState: function(open){
+          var self  = this
+          ,   nodes = this._getViewNodes()
+          if (open) {
               // open it
-              $gbBody.css('display', 'block')
-              $gbIcon.attr('class', clsOpen)
-            } else {
+              nodes.body.css('display', 'block')
+              nodes.icon.attr('class', self.CLASS_OPEN)
+          } else {
               // close it
-              $gbBody.css('display', 'none')
-              $gbIcon.attr('class', clsClosed)
-            }
-        },
-
-        _setupListeners: function(){
-          var element = this.target.parentElement.parentElement.previousSibling
-
-          //clone the node to remove the event listeners
-          var clone = element.cloneNode();
-          while (element.firstChild) {
-            clone.appendChild(element.lastChild);
+              nodes.body.css('display', 'none')
+              nodes.icon.attr('class', self.CLASS_CLOSED)
           }
-          element.parentNode.replaceChild(clone, element);
-
-          // gather nodes
-          var $gbBody = $(this.target.parentElement.parentElement)
-          ,   $gbHeader = $gbBody.prev()
-          ,   $gbIcon = $gbHeader.find('i')
-          ,   clsOpen = 'glyphicon-minus glyphicon mx-groupbox-collapse-icon'
-          ,   clsClosed = 'glyphicon-plus glyphicon mx-groupbox-collapse-icon'
-
-          // setup
-          $gbHeader.on('click', function(){
-            if ($gbBody.css('display') == 'none'){
-              $gbBody.slideDown(function(){
-                  $gbIcon.attr('class', clsOpen)
-              });
-            }
-            else {
-              $gbBody.slideUp(function(){
-                  $gbIcon.attr('class', clsClosed)
-              });
-            }
-          })
         },
+        _getViewNodes: function(){
+          var $gbBody   = $(this.target.parentElement.parentElement),
+              $gbHeader = $gbBody.prev(),
+              $gbIcon   = $gbHeader.find('i');
 
-        _getCurrentUserRoles: function(){
-          return this._myRoles.map(function(r){
-            return (r && r.jsonData && r.jsonData.attributes && r.jsonData.attributes.Name && r.jsonData.attributes.Name.value ? r.jsonData.attributes.Name.value : "")
-          })
-        },
-        // MC: Update header and border color
-        _setGbColor: function() {
-            // gather nodes
-            var $gbBody = $(this.target.parentElement.parentElement)
-            ,   $gbHeader = $gbBody.prev()
+          return {
+            body   : $gbBody,
+            header : $gbHeader,
+            icon   : $gbIcon
+          }
+        }
 
-            $gbHeader.css('background-color', this.gbColor)
-            $gbHeader.css('border-color', this.gbColor)
-            $gbBody.css('border-color', this.gbColor)
-        },
     });
 });
 

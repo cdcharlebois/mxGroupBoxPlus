@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<widget id="GroupBoxPlus.widget.GroupBoxPlusNoContext" needsEntityContext="false" xmlns="http://www.mendix.com/widget/1.0/">
+    <name>GroupBoxPlus (No Context)</name>
+    <description>The description of this widget.</description>
+
+    <icon>/9j/4QAYRXhpZgAASUkqAAgAAAAAAAAAAAAAAP/sABFEdWNreQABAAQAAABkAAD/4QN9aHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLwA8P3hwYWNrZXQgYmVnaW49Iu+7vyIgaWQ9Ilc1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCI/PiA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJBZG9iZSBYTVAgQ29yZSA1LjYtYzA2NyA3OS4xNTc3NDcsIDIwMTUvMDMvMzAtMjM6NDA6NDIgICAgICAgICI+IDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6YWFmZmViZTctYTQ0ZC00MTMzLTlhODYtMzcxZmQxMjYzNmZjIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjA3MEQ1NkZFODE4RjExRTZCRjc3REVEQ0EwODg1MkY1IiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjA3MEQ1NkZEODE4RjExRTZCRjc3REVEQ0EwODg1MkY1IiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIFBob3Rvc2hvcCBDQyAyMDE1IChNYWNpbnRvc2gpIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6NzA1ZDZkNmItMzQyNi00NDE5LWI0NDgtYjhjNjk0NTEwZGFiIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjM3NjgyOTdFM0UwNTExRTU5NUY4QkNBNDQ0QkNBMDAwIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+/+4ADkFkb2JlAGTAAAAAAf/bAIQAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQICAgICAgICAgICAwMDAwMDAwMDAwEBAQEBAQECAQECAgIBAgIDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMD/8AAEQgAGAAYAwERAAIRAQMRAf/EAH4AAAIDAAAAAAAAAAAAAAAAAAcIBQkKAQADAAMAAAAAAAAAAAAAAAAEBQYBAwcQAAEEAgEEAwEBAAAAAAAAAAUCAwQGAQcIERIUCQATFTIWEQACAgEDAgQDCAMAAAAAAAABAgMEBRESBiEiADETFEFDBzJCkiNT01WV1RYX/9oADAMBAAIRAxEAPwDa1yX5LCuNwgYcMh4hAbLHyyEyXMmW9Pi4Tdtaa8EQIAiha72dbT5c/bdqDIsePEGLz1UpSs4TjOcFlsHjsLZ5HyS1LUwtWaCJmjgaw5ewZBGBGroSCYyCQSQSvTTUidz+eGERW2KxKM5LM6qFWSGP5cUzli8yAAIfiSRp4URfs8H4zlLeoz689emML1/zdbznPXp0zhPBJ3pn4h/3v6Q/zGW/prH73iY/6Ev6MX4rn+P8NVxe5Rj+S0M7NHAIAmKLECTcOYNJ3GWzNjT71tfWxGBPF7B1nqi4V47X7jpwvFlRZYlH8oWhakq+PlbCZHC1uRcbtS28NamniVpIGruHrmMSAxs7kAGQAEkElT000JqcDnVzcbOqKoCBgVZ2BBeWP5kUThg8LggoPgQTr4H/ADFjUskaqYfYUjT0WpEdUbW/Ve33UxV51OjxNp8ZJUH/AFVVNWWoDSncTbYTB+wjH+glmO8n7FtpbXS4PDU+Q4C1h7+OnytSbI091WEKZJdlfIuNoaCyvYyiRtYH7UOm096g8iWs12IXHqx1vZWNWsoJIR+fS03ozxg6nQLq40faepGhT8/rn1n67DjT+667xHpUCxKEs1ixBOPXHiu6+tGcUuqmSEqskLjry2IlqnySyyLcZg2V8YdNi9zy8571cn5Bxz6d4C5LHlMbi8dGJ3RY7cVZJEKsR6Ts8UO6VANr6Rp3AnYn2RhsbwupUhsZCHEKkiAiQxwRxyEqDuj3Fu067lAd9FI7j5mF9RXKDVG4GMxID+kdY3awaRoMaDo3Xs6j1dQyVVt9cyZ5yMB14AbCuR3266UGnCKGB6FIbMtS3sdspDrmzg3LuP5z6d4qpTbHVct73IO1GCSMPEh9qqv6CkOqybGfcUAY7iCep8KOD5vHZNt0Iq1p3qxj28RVQpSe5u2oNCO1lkbp98MejAm2DaeloezzNWsSL3e6AdqQu0hIBOkYo7rksTcJdVnGIRCLe6ReBziczKZBcacZZZeRlCsd+Uryn5eY7L+wrS0pq1e1UmeNyspmADxCRUYGGWFuiyuCCxU6+WoBFtcx/upo7Mc0sFiNXUMnpnVXKFgRJHIvUxqdQARp56Egq/s710683PEHD9qbb2pfh4ghLLC4NrpfFM9EHlJ8OCOmkYrBXjRLQ3OlQBkdhbvTvU0w2jOe1CcYGyR4xmUWLLcfxFmNDqok944BPQkBrh0OnTXwrvcaiyaqmRsTToh1AkjqMAT5ka1ungU+tP1kVDhbRa9Y9ijaRbuTCIJgUcvdcjQCQSvi12i8SBsKhnJlEpVwz+xVbOw0YfKYkyn3mERkO+DEhtN874RxGnxrjtGlbp48chrev6lqFCZZvVlZlDyuA7BI9kaqFRVCntJJdlnDuHQcdqJJbWJ8yFYNIoBAG9yAjFEfqrAMW1J0C67VUD//2Q==</icon>
+
+    <properties>
+        <property key="mfStartOpen" type="microflow" required="false">
+            <caption>Start Open microflow</caption>
+            <category>Appearance</category>
+            <description>This microflow should return `true` or `false`. If true, the groupbox will start open, else closed.</description>
+            <returnType type="Boolean"></returnType>
+        </property>
+        <property key="roleMaps" type="object" required="false" isList="true">
+            <caption>Appearance per Role</caption>
+            <category>Appearance</category>
+            <description>The message visible within the widget.</description>
+            <properties>
+                <property key="role" type="string">
+                    <caption>Role</caption>
+                    <category>Appearance</category>
+                    <description>The user role.</description>
+                </property>
+                <property key="view" type="boolean" defaultValue="true">
+                    <caption>Start Open?</caption>
+                    <category>Appearance</category>
+                    <description>If yes, the group box starts expanded, else it starts collapsed.</description>
+                </property>
+            </properties>
+        </property>
+    </properties>
+</widget>

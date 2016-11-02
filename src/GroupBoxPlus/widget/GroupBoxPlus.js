@@ -74,21 +74,32 @@ define([
         CLASS_OPEN: 'glyphicon-minus glyphicon mx-groupbox-collapse-icon',
         CLASS_CLOSED: 'glyphicon-plus glyphicon mx-groupbox-collapse-icon',
 
+        _contextObj: null,
+        _alreadySet: false,
 
-        // dijit._WidgetBase.postCreate is called after constructing the widget. Implement to do extra setup work.
-        postCreate: function() {
+        update: function(obj, cb){
+          // if there's context, set it
+          if (obj){
+            this._contextObj = obj
+          }
+          // if this is a context *update*
+          if (!this._alreadySet) {
             // determine what method to use to set the initial state of the GB
-            if (this.mfStartOpen != '') {
+            if (this.mfStartOpen != '' && this._contextObj) {
                 // use microflow
                 this._setInitialStateFromMF(this.mfStartOpen)
+                this._alreadySet = true
             } else if (this.roleMaps.length > 0) {
                 // use roles
                 this._setInitialStateFromRoles()
+                this._alreadySet = true
             }
             // only add listeners if groupbox is collapsible
             var nodes = this._getViewNodes()
             if (nodes.header.parent().hasClass('mx-groupbox-collapsible'))
               this._setupListeners();
+          }
+          cb();
         },
 
         _setInitialStateFromRoles: function() {
@@ -117,7 +128,9 @@ define([
             var self = this
             mx.data.action({
                 params: {
-                    actionname: mfName
+                    actionname: mfName,
+                    applyto: 'selection',
+                    guids:[self._contextObj.getGuid()]
                 },
                 callback: function(res) {
                   self._setViewState(res)

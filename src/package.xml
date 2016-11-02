@@ -3,6 +3,7 @@
     <clientModule name="GroupBoxPlus" version="3.0.1" xmlns="http://www.mendix.com/clientModule/1.0/">
         <widgetFiles>
             <widgetFile path="GroupBoxPlus/GroupBoxPlus.xml"/>
+            <widgetFile path="GroupBoxPlus/GroupBoxPlusNoContext.xml"/>
         </widgetFiles>
         <files>
             <file path="GroupBoxPlus/widget/"/>
